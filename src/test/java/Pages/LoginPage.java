@@ -12,16 +12,16 @@ public class LoginPage extends CommonMethods {
 
     //this is object repository of POM
 
-    @FindBy(xpath="//*[@id='txtUsername']")
+    @FindBy(name="username")
     public WebElement usernameField;
 
-    @FindBy(id="txtPassword")
+    @FindBy(name="password")
     public WebElement passwordField;
 
-    @FindBy(id="btnLogin")
-    public WebElement loginButton;
+    @FindBy(xpath="//button[@type='submit']")
+    public WebElement loginPageSignInButton;
 
-    @FindBy(id="spanMessage")
+    @FindBy(xpath="//div[@class='ng-binding ng-scope']")
     public WebElement errorMessageField;
 
    //to initialize all the elements of this page we have to call them inside constructor

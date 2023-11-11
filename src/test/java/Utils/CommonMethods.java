@@ -2,13 +2,17 @@ package Utils;
 
 import StepsDefinition.PageInitializer;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,34 +25,51 @@ public class CommonMethods extends PageInitializer {
     public static void openBrowserAndNavigateToURL() {
         ConfigReader.readProperties(Constants.CONFIG_READER_PATH);
         switch (ConfigReader.getPropertyValue("browser")) {
-            case "chrome":
+            case "Chrome":
                 ChromeOptions cp=new ChromeOptions();
                 cp.setHeadless(false);
                 driver = new ChromeDriver(cp);
                 break;
-            case "firefox":
+            case "Firefox":
                 driver = new FirefoxDriver();
                 break;
+            case "Edge":
+                driver = new EdgeDriver();
+                break;
+            case "Safari":
+                driver= new SafariDriver();
         }
         driver.manage().window().maximize();
         driver.get(ConfigReader.getPropertyValue("url"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
         //this method is going to initialize all the objects available inside this method
         initializePageObjects();
-        // To configure the File and pattern it has
-        DOMConfigurator.configure("log4j.xml");
-        Log.startTestCase("This is the beginning of my Test case");
-        Log.info("My test case is executing right now");
-        Log.warn("My test case might have some trivial issues");
 
     }
 
     public static void closeBrowser() {
-        Log.info("This test case is about to get completed");
-        Log.endTestCase("This test case is finished");
+
         if (driver != null) {
             driver.quit();
         }
+    }
+    public static void doClick(WebElement element) {
+        element.click();
+    }
+    public static void sendText(WebElement element, String text) {
+        element.clear();
+        element.sendKeys(text);
+    }
+    public static String getText(WebElement element){
+       return element.getText();
+    }
+    public static WebDriverWait getWait(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        return wait;
+    }
+
+    public static void waitForClickability(WebElement element){
+        getWait().until(ExpectedConditions.elementToBeClickable(element));
     }
     public static byte[] takeScreenshot(String fileName){
         TakesScreenshot ts = (TakesScreenshot) driver;
